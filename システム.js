@@ -24,10 +24,10 @@ document.getElementById('clear-memos').addEventListener('click', function(event)
 	// Clear the memo list
 	memoList.innerHTML = '';
 	// Remove the memos cookie
-	document.cookie = 'memos=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+	localStorage.removeItem('memos');
 });
 
-// Add memos from cookie when page loads
+// Add memos from localStorage when page loads
 loadMemos();
 
 // Function to add a memo to the memo list
@@ -65,7 +65,7 @@ function addMemo(memo) {
 	removeMemoButton.addEventListener('click', function(event) {
 		// Remove the memo item from the memo list
 		memoList.removeChild(event.target.parentNode);
-		// Save the memos to a cookie
+		// Save the memos to localStorage
 		saveMemos();
 	});
 	// Add the memo text, copy memo button, and remove memo button to the memo item
@@ -76,19 +76,17 @@ function addMemo(memo) {
 	memoList.appendChild(memoItem);
 }
 
-// Function to load memos from cookie
+// Function to load memos from localStorage
 function loadMemos() {
-	// Get the memos from the memos cookie (if set)
-	const memosCookie = getCookie('memos');
-	if (memosCookie) {
-		// Split the memos cookie value into an array
-		const memos = memosCookie.split('|');
+	// Get the memos from localStorage (if set)
+	const memos = JSON.parse(localStorage.getItem('memos'));
+	if (memos) {
 		// Add each memo from the array to the memo list
 		memos.forEach(memo => addMemo(memo));
 	}
 }
 
-// Function to save memos to cookie
+// Function to save memos to localStorage
 function saveMemos() {
 	// Get the memos from the memo list
 	const memosList = memoList.querySelectorAll('p');
@@ -96,26 +94,11 @@ function saveMemos() {
 	const memos = [];
 	// Add each memo text to the memos array
 	memosList.forEach(memo => memos.push(memo.textContent));
-	// Join the memos array into a string with '|' separator
-	const memosString = memos.join('|');
-	// Set the memos cookie with the memos string and 7 day expiration
-	document.cookie = `memos=${memosString}; max-age=${60*60*24*7};`;
+	// Save the memos to localStorage
+	localStorage.setItem('memos', JSON.stringify(memos));
 }
 
-// Function to get a cookie by name
+// Function to get a cookie by name (Not needed anymore)
 function getCookie(name) {
-	// Split the cookies string into an array
-	const cookies = document.cookie.split(';');
-	// Loop through the cookies array
-	for (let i = 0; i < cookies.length; i++) {
-		// Get the current cookie string
-		const cookie = cookies[i].trim();
-		// Check if the name matches the cookie name
-		if (cookie.startsWith(`${name}=`)) {
-			// Return the cookie value (after the '=')
-			return cookie.substring(name.length+1);
-		}
-	}
-	// Return null if cookie not found
 	return null;
 }
