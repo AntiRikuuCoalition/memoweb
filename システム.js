@@ -41,7 +41,7 @@ function addMemo(memo) {
   // Create the copy memo button element
   const copyMemoButton = document.createElement('button');
   copyMemoButton.classList.add('copy-memo-button');
-  copyMemoButton.textContent = 'Copy';
+  copyMemoButton.textContent = 'コピー';
   // Add event listener to copy memo button
   copyMemoButton.addEventListener('click', function(event) {
     // Get the memo text from the memo item
@@ -60,7 +60,7 @@ function addMemo(memo) {
   });
   // Create the remove memo button element
   const removeMemoButton = document.createElement('button');
-  removeMemoButton.textContent = 'Delete';
+  removeMemoButton.textContent = '削除';
   // Add event listener to remove memo button
   removeMemoButton.addEventListener('click', function(event) {
     // Remove the memo item from the memo list
