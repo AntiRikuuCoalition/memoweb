@@ -1,52 +1,60 @@
-// ローカルストレージからメモを取得する関数
-function getMemos() {
-    return JSON.parse(localStorage.getItem('memos')) || [];
+function addMemo() {
+  const memoTitle = document.querySelector("#memo-title-input").value;
+  const memoContent = document.querySelector("#memo-content-input").value;
+
+  const newMemo = document.createElement("div");
+  newMemo.classList.add("memo");
+
+  const memoHeader = document.createElement("div");
+  memoHeader.classList.add("memo-header");
+
+  const memoTitleElement = document.createElement("h3");
+  memoTitleElement.classList.add("memo-title");
+  memoTitleElement.textContent = memoTitle;
+
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.add("delete-button");
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", function() {
+    deleteMemo(newMemo);
+  });
+
+  memoHeader.appendChild(memoTitleElement);
+  memoHeader.appendChild(deleteButton);
+
+  const memoText = document.createElement("div");
+  memoText.classList.add("memo-text");
+  memoText.innerHTML = memoContent.replace(/\n/g, "<br>"); // 改行に<br>タグを追加
+
+  const copyButton = document.createElement("button");
+  copyButton.classList.add("copy-button");
+  copyButton.textContent = "Copy";
+  copyButton.addEventListener("click", function() {
+    copyToClipboard(newMemo.getAttribute("id").substring(4));
+  });
+
+  newMemo.appendChild(memoHeader);
+  newMemo.appendChild(memoText);
+  newMemo.appendChild(copyButton);
+  document.querySelector("#memo-container").appendChild(newMemo);
+
+  document.querySelector("#memo-title-input").value = "";
+  document.querySelector("#memo-content-input").value = "";
 }
 
-// メモを保存する関数
-function saveMemo(memo) {
-    const memos = getMemos();
-    memos.push(memo);
-    localStorage.setItem('memos', JSON.stringify(memos));
+function deleteMemo(memo) {
+  memo.parentNode.removeChild(memo);
 }
 
-// メモを全削除する関数
-function clearMemos() {
-    localStorage.removeItem('memos');
-}
-
-// メモを表示する関数
-function showMemos(memos) {
-    const memoList = document.getElementById('memo-list');
-    memoList.innerHTML = '';
-    
-    // メモの表示
-    memos.forEach(memo => {
-        const memoContainer = document.createElement('div');
-        memoContainer.classList.add('memo-container');
-        const memoText = document.createElement('p');
-        memoText.innerText = memo.replace(/\n/g, '<br>'); // 改行を反映する
-        memoContainer.appendChild(memoText);
-        memoList.appendChild(memoContainer);
-    });
-}
-
-// 「メモ作成」フォームを送信したときの処理
-const memoForm = document.getElementById('memo-form');
-memoForm.addEventListener('submit', event => {
-    event.preventDefault(); // フォームのデフォルト動作をキャンセル
-    
-    const memo = event.target.memo.value;
-    if (memo !== '') {
-        saveMemo(memo);
-        event.target.memo.value = '';
-        showMemos(getMemos());
+function copyToClipboard(memoId) {
+  const memoText = document.querySelector(`#memo${memoId} .memo-text`);
+  const memoHtml = memoText.innerHTML;
+  navigator.clipboard.writeText(memoHtml).then(
+    function() {
+      console.log("Copied to clipboard successfully!");
+    },
+    function() {
+      console.error("Failed to copy to clipboard");
     }
-});
-
-// 「メモを全削除する」ボタンをクリックしたときの処理
-const clearMemosButton = document.getElementById('clear-memos');
-clearMemosButton.addEventListener('click', event => {
-    clearMemos();
-    showMemos(getMemos());
-});
+  );
+}
