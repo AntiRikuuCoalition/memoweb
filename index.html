@@ -18,7 +18,27 @@
 		<div id="memo-list">
 		</div>
 		<button id="clear-memos">メモを全削除する</button>
-	</div>
-	<script src="システム.js"></script>
+    </div>
+    <script src="システム.js"></script>
+    <script>
+        // メモを表示する関数
+        function showMemos(memos) {
+            const memoList = document.getElementById('memo-list');
+            memoList.innerHTML = '';
+            
+            // メモの表示
+            memos.forEach(memo => {
+                const memoContainer = document.createElement('div');
+                memoContainer.classList.add('memo-container');
+                const memoText = document.createElement('p');
+                memoText.innerText = memo.replace(/\n/g, '<br>'); // 改行を反映する
+                memoContainer.appendChild(memoText);
+                memoList.appendChild(memoContainer);
+            });
+        }
+        
+        // 初期表示
+        showMemos(getMemos());
+    </script>
 </body>
 </html>
