@@ -31,7 +31,13 @@
                 const memoContainer = document.createElement('div');
                 memoContainer.classList.add('memo-container');
                 const memoText = document.createElement('p');
-                memoText.innerText = memo.replace(/\n/g, '<br>'); // 改行を反映する
+                memoText.innerHTML = memo.replace(/\n/g, '<br>'); // 改行を反映する
+                // コピー時に改行が反映されるようにする
+                memoText.addEventListener('copy', event => {
+                    event.preventDefault();
+                    const text = event.clipboardData.getData('text/plain');
+                    event.clipboardData.setData('text/plain', text.replace(/<br>/g, '\n'));
+                });
                 memoContainer.appendChild(memoText);
                 memoList.appendChild(memoContainer);
             });
